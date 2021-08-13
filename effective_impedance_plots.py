@@ -34,12 +34,12 @@ y = k*phi_max/h
 # Set up impedance model
 Q = 1
 hom = 1
-Q_2_list = [200]
-f_r2_list = f_r*np.array([0.15,0.2,0.3])
+Q_2_list = [10]
+f_r2_list = f_r*np.array([0.2,0.34,0.4])
 
 broadband_resonator_impedance = resonator_impedance(k,Q,f_r)
 
-fig, ax = plt.subplots(1,2,figsize=(10,4),sharex=False)
+fig, ax = plt.subplots(1,2,figsize=(8,4),sharex=False)
 cmap = plt.get_cmap("tab10")
 for j in range(len(f_r2_list)):
     for i in range(len(Q_2_list)):
@@ -48,19 +48,21 @@ for j in range(len(f_r2_list)):
         impedance_model_k = impedance_model/k
         ax[0].plot(k,impedance_model_k,label=f'$f_{{r,2}}/f_r={f_r2_list[j]/f_r}$',color=cmap(j))
         # ax[0].axvline(-k_eff,linestyle='--',color='red')
-        ax[0].axvline(k_eff,linestyle='--',color='red')
+        # ax[0].axvline(k_eff,linestyle='--',color='red')
         ax[0].set_ylabel("$Im(Z_k/k)\;[\Omega]$")
         ax[0].set_xlabel("k")
         ax[0].set_title(f'$Q_2={Q_2_list[i]}$')
         ax[0].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         ax[0].ticklabel_format(style='sci', axis='x', scilimits=(0,0))
 
+        zero_crossing_indices = np.where(np.diff(np.sign(impedance_model/k)))[0]
         n_cumsum = np.imag(numerator_cumsum(impedance_model,mu,phi_max,k))
-        zero_crossing_index = np.where(np.diff(np.sign(impedance_model_k)))[0][-1]
-        k_max = k[zero_crossing_index]
+        cumsum_peak_index = zero_crossing_indices[np.argmax(n_cumsum[zero_crossing_indices])]
+        last_zero_crossing_index = zero_crossing_indices[-1]
+
         ax[1].plot(k,n_cumsum,label=f'$f_{{r,2}}/f_r={f_r2_list[j]/f_r}$',color=cmap(j))
-        ax[1].axvline(k_eff,linestyle='--',color='red')
-        ax[1].plot(k_max,n_cumsum[zero_crossing_index],'o',color='black')
+        # ax[1].axvline(k_eff,linestyle='--',color='red')
+        ax[1].plot(k[cumsum_peak_index],n_cumsum[cumsum_peak_index],'o',color='black')
         ax[1].set_xlabel('$k$')
         ax[1].set_ylabel('$\sum_{{k\'=0}}^k Im(Z_{{k\'}}/k\') G_{k\'k\'}$')
         ax[1].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -77,7 +79,7 @@ for j in range(len(f_r2_list)):
 
 
 # fig.suptitle(f'$Q={Q_2_list},\; f_{{r,2}}/f_r={f_r2_list/f_r},\; \mu={mu},\; hom={hom}$')
-plt.legend()
+plt.legend(frameon=False)
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 # plt.savefig(f'Figures/Z_eff_multiplot_{timestamp}.png',dpi=300)
 plt.show()
