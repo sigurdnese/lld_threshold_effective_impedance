@@ -1,3 +1,6 @@
+"""
+Functions for calculating the LLD threshold using effective impedance
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import mpmath
@@ -12,20 +15,34 @@ def resonator_impedance(K,quality,resonance_freq):
         # Handle apparent singularity
         return np.zeros_like(K)
 
-# Constant inductive impedance
 def constant_inductive(K):
     return 1j*K*ImZ_over_k
 
 def hg1f2(Mu,Y):
+    """
+    Generalized hypergeometric function.
+    Takes single number Y.
+    """
     return float(mpmath.hyp1f2(0.5,2,Mu,-Y**2))
 
 def hg2f3(Mu,Y):
+    """
+    Generalized hypergeometric function.
+    Takes single number Y.
+    """
     return float(mpmath.hyp2f3(0.5,0.5,1.5,2,Mu,-Y**2))
 
 def G_kk(Mu,Y,Phi_max):
+    """
+    Calculates the matrix element G_kk in the cases where Bessel functions cannot be used.
+    """
     return np.complex64(1j*((16*Mu*(Mu+1))/(np.pi*Phi_max**4)*(1-hg1f2(Mu,Y))))
 
 def make_G_diag(Mu,Y,Phi_max):
+    """
+    Gives the diagnoal matrix elements G_kk as an array.
+    Uses Bessel functions for special values of Mu.
+    """
     if Mu == 0.5:
         print('mu=0.5, using Bessel functions')
         G_diag = np.complex64(1j*((16*Mu*(Mu+1))/(np.pi*Phi_max**4)*(1-jv(1,2*Y)/Y)))
@@ -46,6 +63,11 @@ def make_G_diag(Mu,Y,Phi_max):
     return G_diag
 
 def get_effective_impedance(imag_Z_k,Mu,Phi_max,K,K_bool=np.array([True]),G_diag=[]):
+    """
+    Calculates the effective impedance given an impedance model imag_Z_k = Im(Z_k/k)
+    and a corresponding range K. K_bool is an array of bools determining which values are included in the sum.
+    Also works for a grid of K arrays/impedances.
+    """
     Y = K*Phi_max/h
     # G_kk is pure imaginary. i will cancel, so take imag to save memory
     if len(G_diag)==0:
@@ -58,7 +80,11 @@ def get_effective_impedance(imag_Z_k,Mu,Phi_max,K,K_bool=np.array([True]),G_diag
     else:
         denominator = np.sum(G_diag,axis=-1,where=K_bool)
     return numerator/denominator
+
 def numerator_cumsum(imag_Z_k,Mu,Phi_max,K,G_diag=[]):
+    """
+    Calculates the cumulative sum corresponding to the numerator in the effective impedance.
+    """
     # Creates G_kk array, takes impedance model array
     Y = K*Phi_max/h
     if len(G_diag)==0:
@@ -66,9 +92,14 @@ def numerator_cumsum(imag_Z_k,Mu,Phi_max,K,G_diag=[]):
     return np.cumsum(G_diag*imag_Z_k/K)
 
 def chi(Mu, Y):
+    """
+    The function chi(mu,y) appearing in the LLD intensity threshold formula.
+    """
     return Y*(1-hg2f3(Mu,Y))
 
 def get_xi_threshold(Mu,Y_max,Effective_Impedance,Phi_max):
-    # Equation (55) in paper
+    """
+    Calculates the intensity parameter at the LLD threshold using effective impedance.
+    """
     return (np.pi*Phi_max**5*ImZ_over_k)/(32*Mu*(Mu+1)*chi(Mu,Y_max)*Effective_Impedance)
 
