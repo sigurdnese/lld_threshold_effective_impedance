@@ -1,3 +1,6 @@
+"""
+Parameters used in the calculation of effective impedance and the LLD threshold
+"""
 import numpy as np
 
 # Parameters
@@ -12,8 +15,6 @@ phi_s0 = np.pi # Synchronous phase
 phi_max = 1.3
 gamma_tr = 55.76
 E_0 = 0.45e12 # ev
-
-# phi_max_array = np.linspace(0.8,2,20)
 
 # Broadband resonator impedance
 Q = 1
