@@ -128,6 +128,10 @@ np.savetxt(f'errors/errors_adaptive_{adaptive_mode_name}_Q_2_{Q_2_array[0]}_f_ho
 
 print(errors_fixed)
 print(errors_adaptive)
+max_error_index_fixed = np.argmax(np.abs(errors_fixed))
+max_error_index_adaptive = np.argmax(np.abs(errors_adaptive))
+print(f'Fixed k_eff: Max error {errors_fixed[max_error_index_fixed]} at f_r2/f_r = {melody_f_r2[max_error_index_fixed]/f_r}')
+print(f'Adaptive k_eff ({adaptive_mode_name}): Max error {errors_adaptive[max_error_index_adaptive]} at f_r2/f_r = {melody_f_r2[max_error_index_adaptive]/f_r}')
 
 ax[0].plot(f_r2_array/f_r,xi_threshold_adaptive,color='black',label='Adaptive $k_{eff}$')
 ax[0].plot(f_r2_array/f_r,xi_threshold_fixed,color='red',label=f'Fixed $k_{{eff}}$')
