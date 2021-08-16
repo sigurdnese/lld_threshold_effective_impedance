@@ -64,7 +64,7 @@ def make_G_diag(Mu,Y,Phi_max):
 
 def get_effective_impedance(imag_Z_k,Mu,Phi_max,K,K_bool=np.array([True]),G_diag=[]):
     """
-    Calculates the effective impedance given an impedance model imag_Z_k = Im(Z_k/k)
+    Calculates the effective impedance given an impedance model imag_Z_k = Im(Z_k)
     and a corresponding range K. K_bool is an array of bools determining which values are included in the sum.
     Also works for a grid of K arrays/impedances.
     """
