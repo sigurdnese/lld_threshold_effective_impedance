@@ -28,7 +28,7 @@ print("Timer starts now")
 
 # HOM impedance
 Q_2_array = np.array([10])
-f_r2_array = np.linspace(0,1*f_r,50)
+f_r2_array = np.linspace(0,1*f_r,20)
 f_hom = 1
 print(f'hom = {f_hom}')
 
@@ -60,7 +60,7 @@ effective_impedance_adaptive = []
 xi_threshold_fixed = []
 xi_threshold_adaptive = []
 for f_r2 in f_r2_array:
-    for adaptive_k_eff in [True,False]:
+    for adaptive_k_eff in [True, False]:
         print(f'Adaptive k_eff {adaptive_k_eff}')   
         k_eff_bbr = int(f_r/f_0)
         if adaptive_k_eff:
@@ -92,7 +92,7 @@ for f_r2 in f_r2_array:
             if adaptive_k_eff:
                 zero_crossing_indices = np.where(np.diff(np.sign(impedance_model/k)))[0]
                 n_cumsum = np.imag(numerator_cumsum(impedance_model,mu,phi_max,k,G_diag=G_diag))
-                cumsum_peak_index = zero_crossing_indices[np.argmax(n_cumsum[zero_crossing_indices])]
+                cumsum_peak_index = np.argmax(n_cumsum)
                 last_zero_crossing_index = zero_crossing_indices[-1]
                 first_zero_crossing_index = zero_crossing_indices[0]
                 # Choose index for adaptive k_eff mode
@@ -117,18 +117,18 @@ for f_r2 in f_r2_array:
                 effective_impedance_fixed.append(effective_impedance)
                 xi_threshold_fixed.append(xi_threshold)
 
+print("Process finished --- %s seconds ---" % (time.time() - start_time))
+
 ax.plot(f_r2_array/f_r,xi_threshold_fixed,color='red',label=f'Fixed $k_{{eff}}$')
 ax.plot(f_r2_array/f_r,xi_threshold_adaptive,color='black',label='Adaptive $k_{eff}$')
 ax.set_xlabel('$f_{r,2}/f_r$')
 ax.set_ylabel('$\zeta_\\mathrm{th}$')
-ax.set_ylim(0,1.6e-2)
+ax.set_ylim(0,1.1*max(melody_xi))
 
 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-ax.legend()
-ax.set_title(f'$Q_2={Q_2_array[0]}$, f_hom={f_hom}')
+# ax.legend()
+ax.set_title(f'$Q_2={Q_2_array[0]}$')
 
 plt.tight_layout()
 # plt.savefig(f'Figures/MELODY_comparison/lxplus/comparison_{adaptive_mode_name}_{timestamp}.pdf')
 plt.show()
-
-print("Process finished --- %s seconds ---" % (time.time() - start_time))

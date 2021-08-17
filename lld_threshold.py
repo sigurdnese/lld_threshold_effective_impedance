@@ -46,7 +46,7 @@ hom = 1
 impedance_model = np.imag(broadband_resonator_impedance+hom*resonator_impedance(k,Q_2,f_r2))
 zero_crossing_indices = np.where(np.diff(np.sign(impedance_model/k)))[0]
 n_cumsum = np.imag(numerator_cumsum(impedance_model,mu,phi_max,k,G_diag=G_diag))
-cumsum_peak_index = zero_crossing_indices[np.argmax(n_cumsum[zero_crossing_indices])]
+cumsum_peak_index = np.argmax(n_cumsum)
 last_zero_crossing_index = zero_crossing_indices[-1]
 first_zero_crossing_index = zero_crossing_indices[0]
 # Choose index for adaptive k_eff mode

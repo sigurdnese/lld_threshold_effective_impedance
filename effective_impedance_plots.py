@@ -34,12 +34,12 @@ y = k*phi_max/h
 # Set up impedance model
 Q = 1
 hom = 1
-Q_2_list = [10]
-f_r2_list = f_r*np.array([0.2,0.34,0.4])
+Q_2_list = [200]
+f_r2_list = f_r*np.array([0.21,0.22])
 
 broadband_resonator_impedance = resonator_impedance(k,Q,f_r)
 
-fig, ax = plt.subplots(1,2,figsize=(8,4),sharex=False)
+fig, ax = plt.subplots(1,3,figsize=(12,4),sharex=False)
 cmap = plt.get_cmap("tab10")
 for j in range(len(f_r2_list)):
     for i in range(len(Q_2_list)):
@@ -57,25 +57,23 @@ for j in range(len(f_r2_list)):
 
         zero_crossing_indices = np.where(np.diff(np.sign(impedance_model/k)))[0]
         n_cumsum = np.imag(numerator_cumsum(impedance_model,mu,phi_max,k))
-        cumsum_peak_index = zero_crossing_indices[np.argmax(n_cumsum[zero_crossing_indices])]
+        cumsum_peak_index = np.argmax(n_cumsum)
         last_zero_crossing_index = zero_crossing_indices[-1]
 
-        ax[1].plot(k,n_cumsum,label=f'$f_{{r,2}}/f_r={f_r2_list[j]/f_r}$',color=cmap(j))
+        ax[2].plot(k,n_cumsum,label=f'$f_{{r,2}}/f_r={f_r2_list[j]/f_r}$',color=cmap(j))
         # ax[1].axvline(k_eff,linestyle='--',color='red')
-        ax[1].plot(k[cumsum_peak_index],n_cumsum[cumsum_peak_index],'o',color='black')
-        ax[1].set_xlabel('$k$')
-        ax[1].set_ylabel('$\sum_{{k\'=0}}^k Im(Z_{{k\'}}/k\') G_{k\'k\'}$')
-        ax[1].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-        ax[1].ticklabel_format(style='sci', axis='x', scilimits=(0,0))
-        ax[1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax[2].plot(k[cumsum_peak_index],n_cumsum[cumsum_peak_index],'o',color='black')
+        ax[2].set_xlabel('$k$')
+        ax[2].set_ylabel('$\sum_{{k\'=0}}^k Im(Z_{{k\'}}/k\') G_{k\'k\'}$')
+        ax[2].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        ax[2].ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+        ax[2].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 
-        # G_kk_array = [G_kk(mu,yy,phi_max) for yy in y]
-        # ax[2].plot(k,np.imag(G_kk_array))
-        # ax[2].axvline(-k_eff,linestyle='--',color='red')
-        # ax[2].axvline(k_eff,linestyle='--',color='red')
-        # ax[2].set_xlabel('$k$')
-        # ax[2].set_ylabel('$G_{kk}$')
-        # ax[2].ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+G_kk_array = [G_kk(mu,yy,phi_max) for yy in y]
+ax[1].plot(k,np.imag(G_kk_array))
+ax[1].set_xlabel('$k$')
+ax[1].set_ylabel('$G_{kk}$')
+ax[1].ticklabel_format(style='sci', axis='x', scilimits=(0,0))
 
 
 # fig.suptitle(f'$Q={Q_2_list},\; f_{{r,2}}/f_r={f_r2_list/f_r},\; \mu={mu},\; hom={hom}$')

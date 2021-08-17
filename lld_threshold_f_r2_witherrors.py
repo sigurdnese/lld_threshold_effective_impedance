@@ -28,7 +28,7 @@ start_time = time.time()
 print("Timer starts now")
 
 # HOM impedance
-Q_2_array = np.array([200])
+Q_2_array = np.array([10])
 f_hom = 1
 print(f'hom = {f_hom}')
 
@@ -93,11 +93,11 @@ for f_r2 in f_r2_array:
             if adaptive_k_eff:
                 zero_crossing_indices = np.where(np.diff(np.sign(impedance_model/k)))[0]
                 n_cumsum = np.imag(numerator_cumsum(impedance_model,mu,phi_max,k))
-                cumsum_peak_index = zero_crossing_indices[np.argmax(n_cumsum[zero_crossing_indices])]
+                cumsum_peak_index = np.argmax(n_cumsum)
                 last_zero_crossing_index = zero_crossing_indices[-1]
                 first_zero_crossing_index = zero_crossing_indices[0]
                 # Choose index for adaptive k_eff mode
-                adaptive_index, adaptive_mode_name = choose_adaptive_mode(cumsum_peak_index)
+                adaptive_index, adaptive_mode_name = choose_adaptive_mode(first_zero_crossing_index)
                 k_bool = np.array(np.abs(k)<k[adaptive_index])
                 k_max = k[adaptive_index]
             else:
@@ -133,11 +133,11 @@ max_error_index_adaptive = np.argmax(np.abs(errors_adaptive))
 print(f'Fixed k_eff: Max error {errors_fixed[max_error_index_fixed]} at f_r2/f_r = {melody_f_r2[max_error_index_fixed]/f_r}')
 print(f'Adaptive k_eff ({adaptive_mode_name}): Max error {errors_adaptive[max_error_index_adaptive]} at f_r2/f_r = {melody_f_r2[max_error_index_adaptive]/f_r}')
 
-ax[0].plot(f_r2_array/f_r,xi_threshold_adaptive,color='black',label='Adaptive $k_{eff}$')
-ax[0].plot(f_r2_array/f_r,xi_threshold_fixed,color='red',label=f'Fixed $k_{{eff}}$')
+ax[0].plot(f_r2_array/f_r,xi_threshold_adaptive,'o--',color='black',label='Adaptive $k_{eff}$')
+ax[0].plot(f_r2_array/f_r,xi_threshold_fixed,'o--',color='red',label=f'Fixed $k_{{eff}}$')
 ax[0].set_xlabel('$f_{r,2}/f_r$')
 ax[0].set_ylabel('$\zeta_\\mathrm{th}$')
-ax[0].set_ylim(0,1.6e-2)
+ax[0].set_ylim(bottom=0)
 ax[0].ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 ax[0].set_title(f'$Q_2={Q_2_array[0]}$, f_hom={f_hom}')
 
