@@ -14,7 +14,7 @@ omega_rf = 2*np.pi*f_rf # rad/s
 omega_0 = omega_rf/h
 
 # Phi axis
-deltaphi1 =  np.linspace(0,0.5*np.pi,1000)
+deltaphi1 =  np.linspace(0,0.8*np.pi,1000)
 K = np.zeros_like(deltaphi1)
 argument = np.sin(deltaphi1/2)
 

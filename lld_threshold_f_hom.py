@@ -1,6 +1,6 @@
 """
 Plots LLD threshold from MELODY as a function of f_hom (hom contribution fraction)
-and compares to effective impedance calculation.
+and compares to effective impedance calculation
 MELODY results obtained from '../LHC/results_threshold_bbr_eff_imp/n_m97'
 """
 import glob

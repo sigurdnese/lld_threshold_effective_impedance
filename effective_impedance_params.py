@@ -13,6 +13,7 @@ V_0 = 6e6 # V
 qV_0 = V_0*1 # eV
 phi_s0 = np.pi # Synchronous phase
 phi_max = 1.3
+phi_max_array = [1.3,2]
 gamma_tr = 55.76
 E_0 = 0.45e12 # ev
 

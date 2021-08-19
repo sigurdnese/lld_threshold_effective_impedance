@@ -8,11 +8,13 @@ import glob
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from scipy import interpolate
+from effective_impedance_params import *
 plt.rcParams.update({'font.size':15})
 c = plt.get_cmap('tab10').colors
-plt.rcParams['axes.prop_cycle'] = plt.cycler(color=c)
-from effective_impedance_params import *
+colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=colors[1:]) 
 
 f_r2_factor_array = np.array([0.005,0.2,0.32,0.5,0.7])
 all_freqs = False # If False, only use f_r2/f_r in f_r2_factor_array
@@ -85,18 +87,18 @@ for nr_hom in nr_hom_array:
 ax[0].plot(E_noint,fs_fs0_noint,'--',color='grey')
 ax[1].plot(E_noint,fs_fs0_der_noint,'--',color='grey',label='Without intensity effects')
 
-ax[0].plot(E_bbr,fs_fs0_bbr,'--',color='lime')
-ax[1].plot(E_bbr,fs_fs0_der_bbr,'--',color='lime',label='BBR only')
+ax[0].plot(E_bbr,fs_fs0_bbr,':',color='black')
+ax[1].plot(E_bbr,fs_fs0_der_bbr,':',color='black',label='BBR only')
 
 ax[0].set_xlim(right = np.max(E))
 ax[0].set_xlabel('$\mathcal{E}$')
 ax[0].set_ylabel('$f_s/f_{s0}$')
-ax[0].legend(handletextpad=0.2,frameon=True,labelspacing=0.1)
+ax[0].legend(handletextpad=0.2,frameon=False,labelspacing=0.1)
 
 ax[1].axhline(-1/8,linestyle='--',color='black',label='-1/8')
 ax[1].set_xlabel('$\mathcal{E}$')
 ax[1].set_ylabel('$d(f_s/f_{s0})/d\mathcal{E}$')
-ax[1].legend()
+ax[1].legend(handletextpad=0.2,frameon=False,labelspacing=0.1)
 
 ax[2].set_xlabel('$\mathcal{E}$')
 # ax[2].set_ylabel('Relative error of $-1/8$ from $d(f_s/f_{s0})/d\mathcal{E}$')
@@ -112,6 +114,6 @@ if inset:
 else:
     axins.remove()
 
-ax[1].set_title(f'$Q_2={Q_2}$')
+ax[1].set_title(f'$Q_2={Q_2}$, $\phi_\\mathrm{{max}}={1.3}$')
 plt.tight_layout()
 plt.show()
