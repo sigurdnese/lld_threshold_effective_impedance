@@ -6,3 +6,5 @@ Code from my project in the CERN Summer Student Programme 2021.
 Project title: "Effective impedance for the loss of Landau damping threshold".
 
 Calculation parameters are stored in effective_impedance_params.py. Use effective_impedance.py and lld_threshold.py to calculate a single value of the effective impedance or the LLD intensity threshold, respectively. Calculations use functions defined in effective_impedance_funcs.py.
+
+Tested for an impedance model with a broadband resonator with a second, higher order term but easily adapted to take an arbitrary impedance model.
